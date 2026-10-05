@@ -3,6 +3,7 @@ import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
 from difflib import get_close_matches
+from pathlib import Path
 
 # ============================================================
 # TANGY STITCH — RETAIL INTELLIGENCE SYSTEM
@@ -69,20 +70,41 @@ p, label, .stCaption {{ color:{CHARCOAL} !important; }}
 
 /* Sidebar */
 section[data-testid="stSidebar"] {{ background:{INK_DARK} !important; border-right:0 !important; }}
-section[data-testid="stSidebar"] > div {{ padding:2rem 1.15rem 1.5rem 1.15rem; }}
+section[data-testid="stSidebar"] > div {{ padding:0.8rem 1.15rem 1.5rem 1.15rem; justify-content:flex-start !important; }}
 section[data-testid="stSidebar"] * {{ font-family:{FONT_SANS}; }}
-section[data-testid="stSidebar"] .brand-name {{ color:#F8F3EA !important; font-family:{FONT_SERIF} !important; font-size:31px; font-weight:600; }}
-section[data-testid="stSidebar"] .brand-sub {{ color:#C9D5D0 !important; font-size:10px; letter-spacing:2.2px; margin-top:4px; }}
+section[data-testid="stSidebar"] .brand-name {{ color:#F8F3EA !important; font-family:{FONT_SERIF} !important; font-size:27px; font-weight:600; margin-top:-6px; }}
+section[data-testid="stSidebar"] .sidebar-logo {{ width:40px; height:70px; margin:0 0 1px 0; padding:0; display:block; overflow:hidden; line-height:0; }}
+section[data-testid="stSidebar"] .sidebar-logo img {{ display:block; width:40px; height:auto; max-height:70px; object-fit:contain; object-position:left top; pointer-events:none; user-select:none; }}
+section[data-testid="stSidebar"] .brand-name {{ color:#F8F3EA !important; font-family:{FONT_SERIF} !important; font-size:27px; font-weight:600; margin-top:0 !important; line-height:1.05 !important; }}
+section[data-testid="stSidebar"] .brand-sub {{ color:#C9D5D0 !important; font-size:10px; letter-spacing:2.2px; margin-top:5px; }}
 section[data-testid="stSidebar"] hr {{ border-color:rgba(255,255,255,.18) !important; }}
 section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {{ color:#F8F3EA !important; }}
 section[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {{ color:#BFCBC6 !important; }}
-section[data-testid="stSidebar"] div[role="radiogroup"] {{ gap:3px; }}
-section[data-testid="stSidebar"] div[role="radiogroup"] label {{
-    padding:8px 8px; border-radius:6px; color:#F8F3EA !important; background:transparent !important;
+section[data-testid="stSidebar"] .nav-heading {{
+    color:#F8F3EA !important; font-size:13px; font-weight:700;
+    margin:0 0 10px 2px; letter-spacing:.2px;
 }}
-section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {{ background:rgba(255,255,255,.06) !important; }}
-section[data-testid="stSidebar"] div[role="radiogroup"] label p {{ color:#F8F3EA !important; }}
-section[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] {{ background:rgba(255,255,255,.09) !important; }}
+section[data-testid="stSidebar"] .ts-nav {{ display:flex; flex-direction:column; gap:3px; }}
+section[data-testid="stSidebar"] .ts-nav-link {{
+    display:flex; align-items:center; gap:10px; padding:9px 8px;
+    border-radius:7px; text-decoration:none !important;
+    color:#F8F3EA !important; background:transparent;
+    font-size:15px; line-height:1.2;
+}}
+section[data-testid="stSidebar"] .ts-nav-link:hover {{
+    background:rgba(255,255,255,.07); color:#F8F3EA !important;
+}}
+section[data-testid="stSidebar"] .ts-nav-link.active {{
+    background:rgba(255,255,255,.10);
+}}
+section[data-testid="stSidebar"] .ts-nav-dot {{
+    width:14px; height:14px; border:1.5px solid rgba(255,255,255,.35);
+    border-radius:50%; flex:0 0 14px; box-sizing:border-box;
+}}
+section[data-testid="stSidebar"] .ts-nav-link.active .ts-nav-dot {{
+    background:#FF6B63; border-color:#FF6B63;
+    box-shadow:inset 0 0 0 3px #F8F3EA;
+}}
 
 /* Inputs */
 div[data-baseweb="select"] > div {{
@@ -176,6 +198,26 @@ div[data-testid="stDataFrame"] {{ display:none !important; }}
 .status-ok {{ background:{SAGE_PALE}; color:{INK}; }}
 .status-watch {{ background:{ROSE_PALE}; color:{ROSE_DARK}; }}
 .footer {{ color:{STONE_DARK}; font-size:10px; letter-spacing:.2px; padding-top:4px; }}
+
+/* Mobile refinement */
+@media (max-width: 768px) {{
+    .block-container {{ padding: 1.15rem 1rem 2.5rem 1rem !important; }}
+    h1 {{ font-size: 34px !important; letter-spacing:-1px; }}
+    h2 {{ font-size: 25px !important; }}
+    h3 {{ font-size: 19px !important; }}
+    .subline {{ font-size: 12px; margin-bottom: 18px; }}
+    .system-rail {{ overflow-x:auto; padding-bottom:8px; }}
+    .system-node {{ min-width:118px; }}
+    .system-link {{ min-width:12px; }}
+    div[data-testid="stMetric"] {{ padding:12px 13px !important; }}
+    div[data-testid="stMetricValue"] {{ font-size:24px !important; }}
+    div[data-testid="stMetricLabel"] p {{ font-size:9px !important; }}
+    .section-title {{ font-size:23px; }}
+    .section-sub {{ font-size:11px; }}
+    .clean-table {{ font-size:10px; }}
+    .clean-table th, .clean-table td {{ padding:8px 9px; }}
+}}
+
 </style>
 """,
     unsafe_allow_html=True,
@@ -339,6 +381,7 @@ def chart(fig, height=380, legend=False, margins=None):
     fig.update_xaxes(
         showline=False,
         zeroline=False,
+        showgrid=False,
         gridcolor=GRID,
         gridwidth=1,
         tickfont=dict(color=CHARCOAL, size=11),
@@ -459,18 +502,147 @@ def forecast_series(history, horizon, model):
     return pred
 
 
+# ------------------------------------------------------------
+# Illustrative retail sales layer
+# ------------------------------------------------------------
+# The workbook does not contain order-level sales, returns, sizes or
+# colour-level sell-through history. These deterministic demo records
+# let the retail analytics layer demonstrate the calculations without
+# presenting simulated values as historical Tangy Stitch performance.
+product_names = costing["Product Name Clean"].dropna().tolist()
+_demo_rows = []
+_sizes = ["XS", "S", "M", "L", "XL"]
+_size_factor = {"XS": 0.70, "S": 0.90, "M": 1.18, "L": 1.12, "XL": 0.78}
+
+for i, product_name in enumerate(product_names):
+    crow = costing[costing["Product Name Clean"] == product_name].iloc[0]
+    base_received = 24 + (i % 5) * 6
+    # Costing cells can be blank/NaN in the public demo workbook. Treat
+    # missing values as unavailable rather than allowing NaN to propagate
+    # into the illustrative sales calculations.
+    cost_raw = pd.to_numeric(pd.Series([crow.get("Total Cost", 0)]), errors="coerce").iloc[0]
+    sell_raw = pd.to_numeric(pd.Series([crow.get("Selling Price", 0)]), errors="coerce").iloc[0]
+    cost = float(cost_raw) if pd.notna(cost_raw) else 0.0
+    sell_price = float(sell_raw) if pd.notna(sell_raw) else 0.0
+
+    # Deterministic variation creates a useful demo range while keeping
+    # the dataset stable across runs and deployments.
+    base_str = 0.42 + ((i * 7) % 27) / 100
+    if sell_price > 0 and np.isfinite(sell_price) and np.isfinite(cost):
+        margin_signal = (sell_price - cost) / sell_price
+        if np.isfinite(margin_signal):
+            base_str += min(max(margin_signal, 0), 0.18)
+    base_str = float(np.clip(base_str, 0.38, 0.78))
+
+    pf = primary_fabric_for_product(product_name)
+    primary_colour = str(pf.get("Colour Clean", "Core") if pf is not None else "Core")
+    secondary_colour = "Core Ivory" if "ivory" not in primary_colour.lower() else "Natural"
+    colours = [primary_colour, secondary_colour]
+
+    for colour_index, colour in enumerate(colours):
+        colour_share = 0.58 if colour_index == 0 else 0.42
+        received_colour = max(1, round(base_received * colour_share))
+        for size in _sizes:
+            received = max(1, round(received_colour * _size_factor[size] / sum(_size_factor.values()) * 5))
+            size_adjust = 0.92 + (0.04 * (i % 3))
+            sold_estimate = received * base_str * _size_factor[size] * size_adjust
+            sold = min(received, max(0, round(sold_estimate))) if np.isfinite(sold_estimate) else 0
+            _demo_rows.append({
+                "Product": product_name,
+                "Size": size,
+                "Colour": colour,
+                "Units Received": received,
+                "Units Sold": sold,
+            })
+
+demo_sales = pd.DataFrame(_demo_rows)
+
+# SKU-level retail metrics
+sku_sales = demo_sales.groupby("Product", as_index=False).agg(
+    Units_Received=("Units Received", "sum"),
+    Units_Sold=("Units Sold", "sum"),
+)
+sku_sales["Sell-through %"] = np.where(
+    sku_sales["Units_Received"] > 0,
+    sku_sales["Units_Sold"] / sku_sales["Units_Received"] * 100,
+    0,
+)
+
+sku_sales = sku_sales.merge(
+    costing[["Product Name Clean", "Total Cost"]].rename(columns={"Product Name Clean": "Product"}),
+    on="Product", how="left"
+)
+# Use the same illustrative 2.75× retail assumption as Product Lab.
+sku_sales["Scenario Retail"] = sku_sales["Total Cost"] * 2.75
+sku_sales["Gross Margin"] = sku_sales["Units_Sold"] * (sku_sales["Scenario Retail"] - sku_sales["Total Cost"])
+sku_sales["Average Inventory Cost"] = ((sku_sales["Units_Received"] - sku_sales["Units_Sold"] / 2).clip(lower=0) * sku_sales["Total Cost"])
+sku_sales["GMROI"] = np.where(
+    sku_sales["Average Inventory Cost"] > 0,
+    sku_sales["Gross Margin"] / sku_sales["Average Inventory Cost"],
+    np.nan,
+)
+
+# Size × colour sell-through matrix
+curve = demo_sales.groupby(["Colour", "Size"], as_index=False).agg(
+    Units_Received=("Units Received", "sum"),
+    Units_Sold=("Units Sold", "sum"),
+)
+curve["Sell-through %"] = np.where(
+    curve["Units_Received"] > 0,
+    curve["Units_Sold"] / curve["Units_Received"] * 100,
+    0,
+)
+
+
 # ============================================================
 # SIDEBAR
 # ============================================================
 
+LOGO_PATH = Path(__file__).parent / "assets" / "tangy_stitch_logo_sidebar_tight.png"
+if LOGO_PATH.exists():
+    import base64
+    logo_b64 = base64.b64encode(LOGO_PATH.read_bytes()).decode("ascii")
+    st.sidebar.markdown(
+        f'<div class="sidebar-logo"><img src="data:image/png;base64,{logo_b64}" alt="Tangy Stitch logo"></div>',
+        unsafe_allow_html=True,
+    )
 st.sidebar.markdown('<div class="brand-name">Tangy Stitch</div>', unsafe_allow_html=True)
 st.sidebar.markdown('<div class="brand-sub">RETAIL INTELLIGENCE</div>', unsafe_allow_html=True)
 st.sidebar.divider()
 
+PAGES = [
+    ("01", "Collection", "01  Collection"),
+    ("02", "Product Lab", "02  Product Lab"),
+    ("03", "Material Lab", "03  Material Lab"),
+    ("04", "Forecast Lab", "04  Forecast Lab"),
+    ("05", "Decision Lab", "05  Decision Lab"),
+]
+
+# Keep navigation inside the Streamlit app. Do NOT use query parameters:
+# changing this control reruns the same URL and preserves the five-page IA.
+_page_labels = [p[2] for p in PAGES]
+_page_default = st.session_state.get("active_page", "01  Collection")
+if _page_default not in _page_labels:
+    _page_default = "01  Collection"
+_page_index = _page_labels.index(_page_default)
+
+def _navigation_changed():
+    st.session_state["reset_page_scroll"] = True
+
 page = st.sidebar.radio(
     "NAVIGATION",
-    ["01  Collection", "02  Product Lab", "03  Material Lab", "04  Forecast Lab", "05  Decision Lab"],
+    _page_labels,
+    index=_page_index,
+    key="active_page",
+    on_change=_navigation_changed,
+    label_visibility="visible",
 )
+
+# Remember the navigation event. The actual scroll script is rendered after
+# the selected page has finished rendering, so the top anchor definitely exists.
+reset_page_scroll = st.session_state.pop("reset_page_scroll", False)
+
+# This stays on the same app URL; only the selected page body changes.
 
 st.sidebar.divider()
 st.sidebar.markdown("**DATA STATUS**")
@@ -483,6 +655,7 @@ st.sidebar.caption("Real workbook data is kept separate from simulated planning 
 # GLOBAL HEADER
 # ============================================================
 
+st.markdown('<div id="page-top-anchor"></div>', unsafe_allow_html=True)
 st.markdown('<div class="eyebrow">TANGY STITCH / RETAIL INTELLIGENCE SYSTEM</div>', unsafe_allow_html=True)
 st.markdown("# TANGY STITCH")
 st.markdown('<div class="subline">A product, material and planning system built around the collection.</div>', unsafe_allow_html=True)
@@ -495,11 +668,15 @@ if page.startswith("01"):
     badge("real", "REAL WORKBOOK DATA")
     section("Collection Intelligence", "A compact view of the current product, material and production footprint.")
 
+    # Executive strip: real workbook KPIs + clearly labelled illustrative retail metrics.
     a, b, c, d = st.columns(4)
     a.metric("Products", len(costing))
-    b.metric("Fabric records", len(fabric))
-    c.metric("Fabric inventory", money(fabric_value))
-    d.metric("Material utilisation", f"{overall_utilisation:.1f}%")
+    b.metric("Fabric inventory", money(fabric_value))
+    c.metric("Sell-through", f"{sku_sales['Sell-through %'].mean():.1f}%")
+    gmroi_mean = sku_sales["GMROI"].replace([np.inf, -np.inf], np.nan).mean()
+    d.metric("GMROI", f"{gmroi_mean:.2f}×" if pd.notna(gmroi_mean) else "—")
+
+    st.caption("Collection-level retail KPIs are illustrative until order-level sales are connected.")
 
     system_rail()
 
@@ -611,6 +788,51 @@ if page.startswith("01"):
                     unsafe_allow_html=True,
                 )
 
+    # ------------------------------------------------------------
+    # Retail performance layer
+    # ------------------------------------------------------------
+    st.write("")
+    badge("demo", "ILLUSTRATIVE RETAIL DATA")
+    section("Retail Performance", "A demonstration of the metrics the system can support once order-level sales are connected.")
+
+    ra, rb, rc = st.columns(3)
+    ra.metric("Average sell-through", f"{sku_sales['Sell-through %'].mean():.1f}%")
+    rb.metric("Average GMROI", f"{sku_sales['GMROI'].replace([np.inf, -np.inf], np.nan).mean():.2f}×")
+    rc.metric("Demo units sold", f"{int(sku_sales['Units_Sold'].sum()):,}")
+
+    left, right = st.columns([1.15, 1])
+    with left:
+        section("Sell-through by SKU", "Percentage of illustrative received inventory sold in the scenario.")
+        str_plot = sku_sales.sort_values("Sell-through %", ascending=True)
+        fig = go.Figure(go.Bar(
+            x=str_plot["Sell-through %"], y=str_plot["Product"], orientation="h",
+            marker_color=INK,
+            text=[f"{v:.0f}%" for v in str_plot["Sell-through %"]], textposition="outside", cliponaxis=False,
+            hovertemplate="<b>%{y}</b><br>Sell-through: %{x:.1f}%<extra></extra>",
+        ))
+        fig = chart(fig, max(430, 22 * len(str_plot) + 110), margins=dict(l=10, r=55, t=10, b=45))
+        fig.update_layout(showlegend=False, xaxis_title="Sell-through (%)", yaxis_title="", bargap=.28)
+        fig.update_xaxes(range=[0, max(85, float(str_plot["Sell-through %"].max()) + 12)])
+        fig.update_yaxes(tickfont=dict(color=CHARCOAL, size=9))
+        st.plotly_chart(fig, width="stretch", config={"displaylogo": False})
+
+    with right:
+        section("Size × colour curve", "Where illustrative demand is concentrating across the assortment.")
+        heat = curve.pivot(index="Colour", columns="Size", values="Sell-through %").reindex(columns=_sizes).fillna(0)
+        fig = go.Figure(go.Heatmap(
+            z=heat.values, x=heat.columns, y=heat.index,
+            zmin=30, zmax=80, colorscale=[[0, ROSE_PALE], [0.55, OCHRE], [1, INK]],
+            text=[[f"{v:.0f}%" for v in row] for row in heat.values], texttemplate="%{text}",
+            hovertemplate="<b>%{y}</b> · %{x}<br>Sell-through: %{z:.1f}%<extra></extra>",
+            colorbar=dict(title=dict(text="STR", font=dict(color=CHARCOAL)), tickfont=dict(color=CHARCOAL)),
+        ))
+        fig = chart(fig, 430, margins=dict(l=10, r=35, t=15, b=45))
+        fig.update_layout(showlegend=False, xaxis_title="Size", yaxis_title="Colour")
+        st.plotly_chart(fig, width="stretch", config={"displaylogo": False})
+
+    callout("demo", "IMPORTANT:", "Sell-through, size/colour performance and GMROI are illustrative planning data. They are not historical Tangy Stitch sales results. Replace this demo layer with order-level data when available.")
+
+
 # ============================================================
 # 02 PRODUCT LAB
 # ============================================================
@@ -635,7 +857,11 @@ elif page.startswith("02"):
     c.metric("Scenario gross profit", money(scenario_profit))
     d.metric("Scenario margin", f"{scenario_margin:.1f}%")
 
-    callout("demo", "SCENARIO:", "The workbook currently contains no actual selling prices. Retail, profit and margin here are simulated planning values and should be replaced with real prices when available.")
+    selected_retail = sku_sales[sku_sales["Product"] == product]
+    selected_gmroi = float(selected_retail["GMROI"].iloc[0]) if not selected_retail.empty and pd.notna(selected_retail["GMROI"].iloc[0]) else np.nan
+    st.metric("Illustrative GMROI", f"{selected_gmroi:.2f}×" if pd.notna(selected_gmroi) else "—")
+
+    callout("demo", "SCENARIO:", "The workbook currently contains no actual selling prices or order-level sales. Retail, profit, sell-through and GMROI here are illustrative planning values and should be replaced with real sales data when available.")
     st.write("")
 
     left, right = st.columns(2)
@@ -844,291 +1070,113 @@ elif page.startswith("04"):
 
 else:
     badge("demo", "PLANNING SCENARIO")
-    section("Decision Lab", "What should we produce? Build a production scenario from demand, then test it against the recorded material and cost base.")
+    section("Decision Lab", "Test a production decision before it becomes a production commitment. Change the assumptions and watch the material position respond.")
 
     products = costing["Product Name Clean"].tolist()
     product = st.selectbox("Product", products, key="decision_product")
+    forecast_units = st.number_input("Expected demand / production units", min_value=1, max_value=250, value=20, step=1, key="decision_units")
+    safety = st.slider("Safety-stock buffer", 0, 30, 10, 5, key="decision_safety")
+    multiplier = st.slider("Illustrative retail multiplier", 1.5, 4.0, 2.75, 0.25, key="decision_multiplier")
+
     row = costing[costing["Product Name Clean"] == product].iloc[0]
-
-    section("01 / Build the scenario", "Change the planning assumptions. Everything below recalculates from these inputs.")
-    c1, c2, c3 = st.columns([1.1, 1, 1])
-    with c1:
-        demand_units = st.number_input("Expected demand", min_value=1, max_value=250, value=20, step=1, key="decision_demand")
-    with c2:
-        safety = st.slider("Safety-stock buffer", 0, 30, 10, 5, key="decision_safety")
-    with c3:
-        multiplier = st.slider("Illustrative retail multiplier", 1.5, 4.0, 2.75, 0.25, key="decision_multiplier")
-
     unit_fabric = unit_fabric_for_product(product)
-    current = primary_fabric_for_product(product)
-    unit_cost = float(row["Total Cost"]) if pd.notna(row["Total Cost"]) else 0.0
-    planned_units = int(np.ceil(demand_units * (1 + safety / 100)))
+    planned_units = int(np.ceil(forecast_units * (1 + safety / 100)))
     material_required = unit_fabric * planned_units if unit_fabric is not None else None
-    available = float(current["Current Stock"]) if current is not None and pd.notna(current["Current Stock"]) else None
-    material_gap = (available - material_required) if material_required is not None and available is not None else None
-    coverage = (available / material_required * 100) if material_required and available is not None else None
-    production_cost = unit_cost * planned_units
-    scenario_revenue = unit_cost * multiplier * planned_units
-    gross_profit = scenario_revenue - production_cost
-    gross_margin = gross_profit / scenario_revenue * 100 if scenario_revenue else 0
+    scenario_revenue = float(row["Total Cost"]) * multiplier * planned_units
+    scenario_cost = float(row["Total Cost"]) * planned_units
+    scenario_profit = scenario_revenue - scenario_cost
 
-    section("02 / Decision bridge", "Demand → production → material → economics.")
-    bridge = st.columns(5)
-    bridge[0].metric("Demand", f"{demand_units} units")
-    bridge[1].metric("Planning qty", f"{planned_units} units")
-    bridge[2].metric("Material", f"{material_required:.1f} m" if material_required is not None else "No match")
-    bridge[3].metric("Production cost", money(production_cost))
-    bridge[4].metric("Gross profit", money(gross_profit))
+    a, b, c, d = st.columns(4)
+    a.metric("Planning quantity", f"{planned_units} units")
+    b.metric("Material required", f"{material_required:.1f} m" if material_required is not None else "No match")
+    c.metric("Scenario revenue", money(scenario_revenue))
+    d.metric("Scenario gross profit", money(scenario_profit))
 
-    if material_required is not None and available is not None:
-        if material_gap >= 0:
-            readiness_label = "READY ON RECORDED STOCK"
-            readiness_copy = f"{current['Fabric Name Clean']} has {available:.1f} m recorded stock against {material_required:.1f} m required. Surplus: {material_gap:.1f} m."
+    callout("demo", "SCENARIO MODE:", "Demand, safety stock and retail multiplier are assumptions. Production cost and material-consumption inputs come from the workbook where available.")
+    st.write("")
+
+    current = primary_fabric_for_product(product)
+    if material_required is not None and current is not None:
+        available = float(current["Current Stock"])
+        gap = available - material_required
+        if gap >= 0:
+            title = "MATERIAL AVAILABLE"
+            copy = f'{current["Fabric Name Clean"]}: {available:.2f} m recorded stock versus {material_required:.2f} m required.'
+            bg = SAGE_PALE
+            fg = INK
+        else:
+            title = "MATERIAL CONSTRAINED"
+            copy = f'{current["Fabric Name Clean"]}: {available:.2f} m available versus {material_required:.2f} m required. Shortfall: {abs(gap):.2f} m.'
+            bg = "#F0DDD9"
+            fg = ROSE_DARK
+        st.markdown(
+            f'<div style="background:{bg};border:1px solid {STONE};border-radius:8px;padding:16px 18px;margin-bottom:18px;">'
+            f'<div style="color:{ROSE};font-size:9px;letter-spacing:1.6px;font-weight:800;">MATERIAL FEASIBILITY</div>'
+            f'<div style="color:{fg};font-family:{FONT_SERIF};font-size:24px;margin-top:4px;">{title}</div>'
+            f'<div style="color:{fg};font-size:11px;margin-top:4px;">{copy}</div></div>',
+            unsafe_allow_html=True,
+        )
+
+    if material_required is not None and current is not None:
+        available_for_readiness = float(current["Current Stock"])
+        coverage = (available_for_readiness / material_required * 100) if material_required else 0
+        if coverage >= 100:
+            readiness_label = "READY ON RECORDED MATERIAL"
+            readiness_copy = f"{current['Fabric Name Clean']} covers the planned quantity with {available_for_readiness - material_required:.1f} m remaining."
             readiness_cls = "status-ok"
         else:
             readiness_label = "MATERIAL CONSTRAINED"
-            readiness_copy = f"{current['Fabric Name Clean']} has {available:.1f} m recorded stock against {material_required:.1f} m required. Shortfall: {abs(material_gap):.1f} m."
+            readiness_copy = f"{current['Fabric Name Clean']} covers {coverage:.0f}% of the planned requirement; {material_required - available_for_readiness:.1f} m is not covered by recorded stock."
             readiness_cls = "status-watch"
-    else:
-        readiness_label = "MATERIAL MATCH UNAVAILABLE"
-        readiness_copy = "The workbook does not contain a reliable product-to-material consumption match for this product."
-        readiness_cls = "status-watch"
-
-    st.markdown(
-        f'''<div class="explorer" style="margin-top:14px;">
-            <div class="explorer-label">Production readiness</div>
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
-                <div>
-                    <div class="explorer-title">{readiness_label}</div>
-                    <div class="explorer-copy">{readiness_copy}</div>
+        st.markdown(
+            f"""<div class="explorer" style="margin-top:4px; margin-bottom:20px;">
+                <div class="explorer-label">Production readiness</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+                    <div><div class="explorer-title">{product}</div><div class="explorer-copy">{readiness_copy}</div></div>
+                    <span class="status-pill {readiness_cls}">{readiness_label}</span>
                 </div>
-                <span class="status-pill {readiness_cls}">{readiness_label}</span>
-            </div>
-        </div>''',
-        unsafe_allow_html=True,
-    )
-
-    st.write("")
-    left, right = st.columns(2)
-    with left:
-        section("Material coverage", "How much of the planned production quantity is supported by recorded stock?")
-        if coverage is not None:
-            coverage_value = min(coverage, 100)
-            fig = go.Figure(go.Bar(x=[coverage_value], y=["Recorded stock coverage"], orientation="h", marker_color=INK, text=[f"{coverage:.0f}%"], textposition="inside", insidetextanchor="end", hovertemplate="Recorded stock coverage: %{x:.1f}%<extra></extra>"))
-            fig.add_vline(x=100, line_dash="dot", line_color=OCHRE, line_width=1.5)
-            fig = chart(fig, 220, margins=dict(l=20, r=35, t=20, b=35))
-            fig.update_layout(showlegend=False, xaxis=dict(range=[0, max(110, coverage_value + 10)], ticksuffix="%"), yaxis_title="")
-            st.plotly_chart(fig, width="stretch", config={"displaylogo": False})
-        else:
-            st.caption("Coverage cannot be calculated from the recorded workbook relationships.")
-
-    with right:
-        section("Unit economics", "Workbook production cost with an explicitly illustrative retail scenario.")
-        economics = pd.DataFrame({"Metric": ["Cost / unit", "Scenario retail / unit", "Gross profit / unit", "Gross margin"], "Value": [money(unit_cost), money(unit_cost * multiplier), money(unit_cost * (multiplier - 1)), f"{gross_margin:.1f}%"]})
-        html_table(economics, ["Metric", "Value"])
-        st.caption("Retail value is simulated. The workbook's selling-price field is not used as a factual market price.")
-
-    section("03 / Production decision", "A compact readout of what this scenario implies for the current material base.")
-    d1, d2, d3 = st.columns(3)
-    d1.metric("Planned production", f"{planned_units} units")
-    d2.metric("Material requirement", f"{material_required:.1f} m" if material_required is not None else "—")
-    d3.metric("Material surplus / shortfall", f"{material_gap:+.1f} m" if material_gap is not None else "—")
-
-    if material_gap is not None and material_gap < 0:
-        callout("demo", "CONSTRAINT:", f"The scenario requires {abs(material_gap):.1f} m more of the primary recorded material than is currently available. This is a planning constraint, not a purchase recommendation.")
-    elif material_gap is not None:
-        callout("real", "WITHIN RECORDED STOCK:", f"The planned quantity fits within the recorded {current['Fabric Name Clean']} stock, leaving {material_gap:.1f} m after the scenario quantity.")
-    else:
-        callout("demo", "DATA GAP:", "A reliable product-to-material relationship is not available for this product, so material feasibility is left unresolved rather than estimated.")
-
-    # ========================================================
-    # 03A / READINESS DETAIL
-    # ========================================================
-    section("03A / Production readiness detail", "Separate what the workbook can verify from what is not yet linked in the data model.")
-
-    has_cost = pd.notna(row["Total Cost"]) and float(row["Total Cost"]) > 0
-    has_consumption = unit_fabric is not None and unit_fabric > 0
-    has_material_stock = current is not None and available is not None
-    trims_linked = False  # The workbook has trim inventory, but no product → trim consumption relationship.
-
-    readiness_rows = pd.DataFrame({
-        "Check": [
-            "Product cost available",
-            "Product → material consumption",
-            "Primary material stock",
-            "Product → trims relationship",
-            "Demand input",
-        ],
-        "Status": [
-            "VERIFIED" if has_cost else "MISSING",
-            "VERIFIED" if has_consumption else "MISSING",
-            "VERIFIED" if has_material_stock else "MISSING",
-            "NOT LINKED",
-            "SIMULATED",
-        ],
-        "Source": [
-            "Product Costing",
-            "Consumption",
-            "Fabric Inventory",
-            "Trims & Accessories has no product mapping",
-            "Scenario input",
-        ],
-    })
-    html_table(readiness_rows, ["Check", "Status", "Source"])
-    st.caption("The trims check is intentionally left unresolved. The workbook records trim inventory, but does not specify which trims each product consumes.")
-
-    # ========================================================
-    # 03B / MATERIAL DEPENDENCY MAP
-    # ========================================================
-    section("03B / Material dependency map", "See which products depend on a material and how much production the recorded stock could support.")
-
-    dependency_materials = sorted(flow["Fabric Name Clean"].dropna().unique().tolist())
-    if dependency_materials:
-        dependency_material = st.selectbox("Material", dependency_materials, key="decision_dependency_material")
-        dep = flow[flow["Fabric Name Clean"] == dependency_material].copy()
-        dep_units = consumption.groupby("Product Clean", as_index=False)["Qty Produced"].sum().rename(columns={"Qty Produced": "Recorded units"})
-        dep = dep.merge(dep_units, on="Product Clean", how="left")
-        dep["m / unit"] = np.where(dep["Recorded units"] > 0, dep["Fabric Used (m)"] / dep["Recorded units"], np.nan)
-        dep["Recorded stock"] = float(fabric.loc[fabric["Fabric Name Clean"] == dependency_material, "Current Stock"].sum())
-        dep["Max units from stock"] = np.where(dep["m / unit"] > 0, np.floor(dep["Recorded stock"] / dep["m / unit"]), np.nan)
-        dep = dep.sort_values("Fabric Used (m)", ascending=False)
-
-        dep_cols = ["Product Clean", "m / unit", "Recorded stock", "Max units from stock"]
-        dep_view = dep[dep_cols].copy()
-        dep_view.columns = ["Product", "Material / unit", "Recorded stock", "Max units from stock"]
-        html_table(
-            dep_view,
-            list(dep_view.columns),
-            {
-                "Material / unit": lambda x: f"{x:.2f} m",
-                "Recorded stock": lambda x: f"{x:.1f} m",
-                "Max units from stock": lambda x: f"{x:.0f} units",
-            },
+            </div>""",
+            unsafe_allow_html=True,
         )
-        st.caption("Maximum units is calculated against this material alone. It does not mean the product is fully production-ready because other materials or trims may also be required.")
-    else:
-        st.caption("No recorded material → product relationships are available in the workbook.")
 
-    # ========================================================
-    # 03C / ASSORTMENT BUILDER
-    # ========================================================
-    section("03C / Assortment builder", "Build a small collection scenario and test the combined material load instead of evaluating one product at a time.")
-
-    assortment_products = st.multiselect(
-        "Products in the assortment",
-        products,
-        default=products[:min(3, len(products))],
-        max_selections=6,
-        key="decision_assortment_products",
-    )
-    assortment_multiplier = st.slider(
-        "Assortment retail multiplier", 1.5, 4.0, float(multiplier), 0.25, key="decision_assortment_multiplier"
-    )
-
-    assortment_rows = []
-    for i, assortment_product in enumerate(assortment_products):
-        default_qty = 10
-        aq = st.number_input(
-            f"{assortment_product} — units",
-            min_value=0,
-            max_value=250,
-            value=default_qty,
-            step=5,
-            key=f"assortment_qty_{i}_{normalise(assortment_product)}",
-        )
-        arow = costing[costing["Product Name Clean"] == assortment_product].iloc[0]
-        acost = float(arow["Total Cost"]) if pd.notna(arow["Total Cost"]) else 0.0
-        assortment_rows.append({
-            "Product": assortment_product,
-            "Units": int(aq),
-            "Unit cost": acost,
-            "Production cost": acost * int(aq),
-            "Scenario revenue": acost * assortment_multiplier * int(aq),
-        })
-
-    if assortment_rows:
-        assortment_df = pd.DataFrame(assortment_rows)
-        total_units = int(assortment_df["Units"].sum())
-        total_cost = float(assortment_df["Production cost"].sum())
-        total_revenue = float(assortment_df["Scenario revenue"].sum())
-        total_profit = total_revenue - total_cost
-        assortment_margin = total_profit / total_revenue * 100 if total_revenue else 0
-
-        a1, a2, a3, a4 = st.columns(4)
-        a1.metric("Assortment units", f"{total_units} units")
-        a2.metric("Production cost", money(total_cost))
-        a3.metric("Scenario gross profit", money(total_profit))
-        a4.metric("Gross margin", f"{assortment_margin:.1f}%")
-
-        # Aggregate fabric requirements across all selected products.
-        assortment_material = []
-        for item in assortment_rows:
-            if item["Units"] <= 0:
-                continue
-            match = find_consumption_name(item["Product"])
-            if not match:
-                continue
-            crows = consumption[consumption["Product Clean"] == match].copy()
-            total_product_units = crows["Qty Produced"].sum()
-            if not total_product_units:
-                continue
-            per_material = crows.groupby("Fabric ID Clean", as_index=False)["Fabric Used (m)"].sum()
-            per_material["m / unit"] = per_material["Fabric Used (m)"] / total_product_units
-            per_material["Required m"] = per_material["m / unit"] * item["Units"]
-            per_material["Product"] = item["Product"]
-            assortment_material.append(per_material[["Fabric ID Clean", "Product", "m / unit", "Required m"]])
-
-        if assortment_material:
-            req = pd.concat(assortment_material, ignore_index=True)
-            req = req.merge(
-                fabric[["Fabric ID Clean", "Fabric Name Clean", "Current Stock"]],
-                on="Fabric ID Clean",
-                how="left",
-            )
-            material_check = req.groupby(["Fabric ID Clean", "Fabric Name Clean", "Current Stock"], as_index=False)["Required m"].sum()
-            material_check["Surplus / shortfall"] = material_check["Current Stock"] - material_check["Required m"]
-            material_check["Status"] = np.where(material_check["Surplus / shortfall"] >= 0, "READY", "CONSTRAINED")
-
-            section("Assortment material load", "Combined fabric requirements across the selected products.")
-            material_view = material_check[["Fabric Name Clean", "Required m", "Current Stock", "Surplus / shortfall", "Status"]].copy()
-            material_view.columns = ["Material", "Required", "Recorded stock", "Surplus / shortfall", "Status"]
-            html_table(
-                material_view,
-                list(material_view.columns),
-                {
-                    "Required": lambda x: f"{x:.1f} m",
-                    "Recorded stock": lambda x: f"{x:.1f} m",
-                    "Surplus / shortfall": lambda x: f"{x:+.1f} m",
-                },
-            )
-
-            constrained = material_check[material_check["Surplus / shortfall"] < 0]
-            if constrained.empty:
-                callout("real", "ASSORTMENT WITHIN RECORDED MATERIAL:", "All mapped fabric requirements for this assortment are covered by the current recorded stock.")
-            else:
-                names = ", ".join(constrained["Fabric Name Clean"].tolist())
-                callout("demo", "ASSORTMENT CONSTRAINED:", f"The selected collection exceeds recorded stock for {names}. The constraint is shown as a planning signal, not a purchase recommendation.")
-        else:
-            callout("demo", "DATA GAP:", "No complete product-to-material relationship could be calculated for the selected assortment.")
-    else:
-        st.caption("Select at least one product to build an assortment scenario.")
-
-    section("04 / Scenario sensitivity", "See how gross profit changes as production quantity and the illustrative retail multiplier change.")
+    section("What-if matrix", "Gross profit across production quantity and illustrative retail multiplier.")
     multipliers = [2.0, 2.5, 3.0, 3.5]
     quantities = [10, 20, 30, 40]
-    z = [[unit_cost * mult * q - unit_cost * q for mult in multipliers] for q in quantities]
-    fig = go.Figure(go.Heatmap(z=z, x=[f"{m:.1f}×" for m in multipliers], y=[f"{q} units" for q in quantities], colorscale=[[0, ROSE_PALE], [0.5, "#D5C9BA"], [1, INK]], text=[[money(v) for v in r] for r in z], texttemplate="%{text}", textfont=dict(color=CHARCOAL, size=11), hovertemplate="Quantity: %{y}<br>Retail multiplier: %{x}<br>Gross profit: ₹%{z:,.0f}<extra></extra>", colorbar=dict(title=dict(text="Gross profit", font=dict(color=INK_DARK, size=11)), tickfont=dict(color=CHARCOAL, size=10), outlinecolor=STONE)))
+    z = []
+    for q in quantities:
+        row_z = []
+        for mult in multipliers:
+            revenue = float(row["Total Cost"]) * mult * q
+            profit = revenue - float(row["Total Cost"]) * q
+            row_z.append(profit)
+        z.append(row_z)
+    fig = go.Figure(go.Heatmap(
+        z=z,
+        x=[f"{m:.1f}×" for m in multipliers],
+        y=[f"{q} units" for q in quantities],
+        colorscale=[[0, ROSE_PALE], [0.5, "#D5C9BA"], [1, INK]],
+        text=[[money(v) for v in r] for r in z],
+        texttemplate="%{text}",
+        textfont=dict(color=CHARCOAL, size=11),
+        hovertemplate="Quantity: %{y}<br>Retail multiplier: %{x}<br>Gross profit: ₹%{z:,.0f}<extra></extra>",
+        colorbar=dict(
+            title=dict(text="Gross profit", font=dict(color=INK_DARK, size=11)),
+            tickfont=dict(color=CHARCOAL, size=10),
+            outlinecolor=STONE,
+        ),
+    ))
     fig = chart(fig, 390, margins=dict(l=85, r=80, t=20, b=58))
     fig.update_layout(showlegend=False, xaxis_title="Illustrative retail multiplier", yaxis_title="Planned quantity")
     fig.update_xaxes(tickfont=dict(color=CHARCOAL, size=11), title_font=dict(color=INK_DARK, size=12))
     fig.update_yaxes(tickfont=dict(color=CHARCOAL, size=11), title_font=dict(color=INK_DARK, size=12))
     st.plotly_chart(fig, width="stretch", config={"displaylogo": False})
 
+    st.write("")
     left, right = st.columns(2)
     with left:
-        insight("DECISION BRIDGE", "Demand → production → material → economics", "The simulator keeps the chain visible so a production quantity can be tested against both physical inventory and unit economics.")
+        insight("DECISION BRIDGE", "Forecast → production → material", "The useful part of the system is the connection between a demand assumption, production quantity and the recorded material base.")
     with right:
-        insight("DATA DISCIPLINE", "Real inputs stay separate from assumptions", "Recorded inventory, consumption and production cost come from the workbook. Demand, safety stock and retail multiplier remain explicitly simulated.")
+        insight("COMMERCIAL LAYER", "Scenario, not fact", "The workbook has production costs but no actual selling prices. Keeping this layer explicitly simulated prevents invented business results from entering the project.")
 
 # ============================================================
 # FOOTER
@@ -1136,3 +1184,53 @@ else:
 
 st.divider()
 st.markdown('<div class="footer">TANGY STITCH / Retail Intelligence System · Real inventory + transparent simulation layer</div>', unsafe_allow_html=True)
+
+
+# ============================================================
+# NAVIGATION SCROLL RESET
+# ============================================================
+if reset_page_scroll:
+    st.html(
+        """<script>
+        (() => {
+            const goTop = () => {
+                const anchor = document.getElementById('page-top-anchor');
+                const main = document.querySelector('[data-testid="stMain"]');
+                const candidates = [
+                    main,
+                    document.querySelector('section.main'),
+                    document.querySelector('main'),
+                    document.querySelector('[data-testid="stAppViewContainer"]'),
+                    document.scrollingElement,
+                    document.documentElement,
+                    document.body
+                ].filter(Boolean);
+
+                // The anchor is at the very beginning of the page body.
+                if (anchor) {
+                    anchor.scrollIntoView({block: 'start', inline: 'nearest', behavior: 'auto'});
+                }
+
+                for (const el of candidates) {
+                    try {
+                        el.scrollTop = 0;
+                        el.scrollLeft = 0;
+                        if (typeof el.scrollTo === 'function') el.scrollTo(0, 0);
+                    } catch (e) {}
+                }
+
+                try { window.scrollTo(0, 0); } catch (e) {}
+            };
+
+            // Streamlit may finish its DOM update a moment after the script
+            // is inserted, so retry across a few frames.
+            requestAnimationFrame(goTop);
+            setTimeout(goTop, 50);
+            setTimeout(goTop, 150);
+            setTimeout(goTop, 300);
+            setTimeout(goTop, 600);
+        })();
+        </script>""",
+        width="stretch",
+        unsafe_allow_javascript=True,
+    )
