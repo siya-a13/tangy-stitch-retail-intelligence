@@ -665,18 +665,17 @@ st.markdown('<div class="subline">A product, material and planning system built 
 # ============================================================
 
 if page.startswith("01"):
-    badge("real", "REAL WORKBOOK DATA")
+    badge("real", "REAL INVENTORY & COSTING DATA · RETAIL KPIs ILLUSTRATIVE")
     section("Collection Intelligence", "A compact view of the current product, material and production footprint.")
 
     # Executive strip: real workbook KPIs + clearly labelled illustrative retail metrics.
     a, b, c, d = st.columns(4)
     a.metric("Products", len(costing))
     b.metric("Fabric inventory", money(fabric_value))
-    c.metric("Sell-through", f"{sku_sales['Sell-through %'].mean():.1f}%")
+    c.metric("Sell-through · ILLUSTRATIVE", f"{sku_sales['Sell-through %'].mean():.1f}%")
     gmroi_mean = sku_sales["GMROI"].replace([np.inf, -np.inf], np.nan).mean()
-    d.metric("GMROI", f"{gmroi_mean:.2f}×" if pd.notna(gmroi_mean) else "—")
-
-    st.caption("Collection-level retail KPIs are illustrative until order-level sales are connected.")
+    d.metric("GMROI · ILLUSTRATIVE", f"{gmroi_mean:.2f}×" if pd.notna(gmroi_mean) else "—")
+    st.caption("Sell-through and GMROI use simulated sales and an assumed 2.75× retail multiplier. No real sales data is connected yet.")
 
     system_rail()
 
@@ -840,12 +839,14 @@ if page.startswith("01"):
 elif page.startswith("02"):
     badge("real", "REAL COST DATA")
     section("Product Economics", "Understand how each product is built, then test the commercial layer without confusing it with actual sales.")
-
+    st.caption("Production cost = fabric + stitching + trims. Packaging is not yet finalised and is excluded.")
     products = costing["Product Name Clean"].tolist()
     product = st.selectbox("Select product", products, key="product_lab_product")
     multiplier = st.slider("Illustrative retail multiplier", 1.5, 4.0, 2.75, 0.25, key="product_multiplier")
 
     row = costing[costing["Product Name Clean"] == product].iloc[0]
+    if pd.isna(row.get("Fabric Cost")):
+        st.warning("Fabric cost is not recorded for this product, so its total cost is incomplete.")
     cost = float(row["Total Cost"])
     scenario_retail = cost * multiplier
     scenario_profit = scenario_retail - cost
@@ -1079,6 +1080,8 @@ else:
     multiplier = st.slider("Illustrative retail multiplier", 1.5, 4.0, 2.75, 0.25, key="decision_multiplier")
 
     row = costing[costing["Product Name Clean"] == product].iloc[0]
+    if pd.isna(row.get("Fabric Cost")):
+        st.warning("Fabric cost is not recorded for this product, so its total cost is incomplete.")
     unit_fabric = unit_fabric_for_product(product)
     planned_units = int(np.ceil(forecast_units * (1 + safety / 100)))
     material_required = unit_fabric * planned_units if unit_fabric is not None else None
